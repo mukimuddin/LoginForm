@@ -25,8 +25,8 @@ const LoginForm = () => {
   const backgroundSpring = useSpring({
     loop: true,
     to: [
-      { backgroundPosition: '0% 0%', backgroundColor: '#1a1a1a' },
-      { backgroundPosition: '100% 100%', backgroundColor: '#333' },
+      { backgroundPosition: '0% 0%', backgroundColor: '#000000' },
+      { backgroundPosition: '100% 100%', backgroundColor: '#434343' },
     ],
     config: { duration: 15000 },
   });
@@ -50,11 +50,15 @@ const LoginForm = () => {
     let emailError = '';
     let passwordError = '';
 
-    if (!email || !validateEmail(email)) {
+    if (!email) {
+      emailError = 'Email is required.';
+    } else if (!validateEmail(email)) {
       emailError = 'Please enter a valid email address.';
     }
 
-    if (!password || password.length < 8) {
+    if (!password) {
+      passwordError = 'Password is required.';
+    } else if (password.length < 8) {
       passwordError = 'Password must be at least 8 characters long.';
     }
 
@@ -65,6 +69,21 @@ const LoginForm = () => {
 
     // Handle form submission if no errors
     console.log('Form submitted');
+  };
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    if (id === 'email') {
+      setEmail(value);
+      if (value) {
+        setErrors((prevErrors) => ({ ...prevErrors, email: '' }));
+      }
+    } else if (id === 'password') {
+      setPassword(value);
+      if (value) {
+        setErrors((prevErrors) => ({ ...prevErrors, password: '' }));
+      }
+    }
   };
 
   return (
@@ -90,26 +109,28 @@ const LoginForm = () => {
           margin: '0 auto',
           padding: '20px',
           perspective: '1000px',
-          background: 'linear-gradient(135deg, #222, #444)', // Unique gradient for the form
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+          background: 'rgba(255, 255, 255, 0.9)',
+          boxShadow: '0 8px 20px rgba(0, 0, 0, 0.3)',
+          borderRadius: '15px',
+          fontFamily: "'Roboto', sans-serif", // Improved font
         }}
-        className="p-8 rounded-3xl border border-gray-200"
+        className="p-8 border border-gray-200"
       >
-        <h2 className="text-4xl font-extrabold mb-8 text-center text-gray-100">
+        <h2 className="text-4xl font-bold mb-8 text-center text-gray-800">
           Welcome Back
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-6">
-            <label className="block text-gray-300 text-lg font-semibold mb-2" htmlFor="email">
+            <label className="block text-gray-600 text-lg font-semibold mb-2" htmlFor="email">
               Email
             </label>
             <input
               type="email"
               id="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={`w-full px-4 py-3 border rounded-lg shadow-lg bg-gray-800 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-                errors.email ? 'border-red-500' : 'border-gray-600'
+              onChange={handleInputChange}
+              className={`w-full px-4 py-3 border rounded-lg shadow-lg bg-gray-100 text-gray-800 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                errors.email ? 'border-red-500' : 'border-gray-300'
               }`}
               placeholder="Enter your email"
             />
@@ -118,7 +139,7 @@ const LoginForm = () => {
             )}
           </div>
           <div className="mb-8 relative">
-            <label className="block text-gray-300 text-lg font-semibold mb-2" htmlFor="password">
+            <label className="block text-gray-600 text-lg font-semibold mb-2" htmlFor="password">
               Password
             </label>
             <div className="relative">
@@ -126,9 +147,9 @@ const LoginForm = () => {
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={`w-full px-4 py-3 border rounded-lg shadow-lg bg-gray-800 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-                  errors.password ? 'border-red-500' : 'border-gray-600'
+                onChange={handleInputChange}
+                className={`w-full px-4 py-3 border rounded-lg shadow-lg bg-gray-100 text-gray-800 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                  errors.password ? 'border-red-500' : 'border-gray-300'
                 }`}
                 placeholder="Enter your password"
                 aria-describedby="passwordHelp"
@@ -136,13 +157,10 @@ const LoginForm = () => {
               <button
                 type="button"
                 onClick={togglePasswordVisibility}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-300 hover:text-gray-100"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-600 hover:text-gray-800"
               >
                 {showPassword ? <FaEyeSlash size={24} /> : <FaEye size={24} />}
               </button>
-              {/* <div id="passwordHelp" className="absolute top-full left-0 mt-1 text-gray-500 text-sm">
-                Password must be at least 8 characters long and include a number.
-              </div> */}
             </div>
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">{errors.password}</p>
@@ -163,19 +181,19 @@ const LoginForm = () => {
             </a>
           </div>
           <div className="flex flex-col items-center mb-6">
-            <p className="text-gray-300 mb-4">Or sign in with</p>
+            <p className="text-gray-600 mb-4">Or sign in with</p>
             <div className="flex space-x-4">
               <button
                 type="button"
-                className="flex items-center justify-center p-3 bg-red-500 text-white rounded-full shadow-md hover:shadow-lg transition-transform transform hover:scale-105"
+                className="flex items-center justify-center p-3 bg-red-500 text-white rounded-full shadow-md transition-transform transform hover:bg-red-600 active:bg-red-700 hover:scale-110 active:scale-95"
               >
-                <FaGoogle size={20} />
+                <FaGoogle size={20} className="transition-transform transform hover:scale-125 active:scale-110" />
               </button>
               <button
                 type="button"
-                className="flex items-center justify-center p-3 bg-gray-900 text-white rounded-full shadow-md hover:shadow-lg transition-transform transform hover:scale-105"
+                className="flex items-center justify-center p-3 bg-gray-900 text-white rounded-full shadow-md transition-transform transform hover:bg-gray-800 active:bg-gray-700 hover:scale-110 active:scale-95"
               >
-                <FaGithub size={20} />
+                <FaGithub size={20} className="transition-transform transform hover:scale-125 active:scale-110" />
               </button>
             </div>
           </div>
@@ -200,3 +218,6 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
+
+
+
