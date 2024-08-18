@@ -191,6 +191,9 @@ const LoginForm = () => {
             </p>
           </div>
         </form>
+        <footer className="mt-8 text-center text-gray-500 text-sm">
+          Developed By Mukim Uddin
+        </footer>
       </animated.div>
     </animated.div>
   );
