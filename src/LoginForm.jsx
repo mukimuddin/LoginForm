@@ -24,17 +24,33 @@ const LoginForm = () => {
 
   const backgroundSpring = useSpring({
     loop: true,
-    to: [
-      { backgroundPosition: '0% 0%', backgroundColor: '#000000' },
-      { backgroundPosition: '100% 100%', backgroundColor: '#434343' },
-    ],
-    config: { duration: 15000 },
+    to: async (next) => {
+      while (1) {
+        await next({ background: 'linear-gradient(45deg, #FF4E50, #F9D423)' });
+        await next({ background: 'linear-gradient(45deg, #24C6DC, #514A9D)' });
+        await next({ background: 'linear-gradient(45deg, #FF512F, #F09819)' });
+        await next({ background: 'linear-gradient(45deg, #00C9FF, #92FE9D)' });
+        await next({ background: 'linear-gradient(45deg, #FF6B6B, #556270)' });
+      }
+    },
+    config: { duration: 6000 },
   });
 
   const formSpring = useSpring({
     transform: `perspective(1200px) rotateX(${(cursorPosition.y - window.innerHeight / 2) / 20}deg) rotateY(${(cursorPosition.x - window.innerWidth / 2) / 20}deg)`,
+    opacity: 0.7,  // Default opacity
     config: { tension: 280, friction: 60 },
   });
+
+  const hoverSpring = useSpring({
+    opacity: 1,  // Full opacity on hover
+    config: { duration: 300 },
+  });
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => setIsHovered(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -99,8 +115,11 @@ const LoginForm = () => {
       }}
     >
       <animated.div
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         style={{
           ...formSpring,
+          ...(isHovered ? hoverSpring : {}),  // Apply hover effect
           transformStyle: 'preserve-3d',
           position: 'relative',
           zIndex: 10,
@@ -112,7 +131,7 @@ const LoginForm = () => {
           background: 'rgba(255, 255, 255, 0.9)',
           boxShadow: '0 8px 20px rgba(0, 0, 0, 0.3)',
           borderRadius: '15px',
-          fontFamily: "'Roboto', sans-serif", // Improved font
+          fontFamily: "'Roboto', sans-serif",
         }}
         className="p-8 border border-gray-200"
       >
@@ -124,7 +143,7 @@ const LoginForm = () => {
             <label className="block text-gray-600 text-lg font-semibold mb-2" htmlFor="email">
               Email
             </label>
-            <input
+            <animated.input
               type="email"
               id="email"
               value={email}
@@ -143,7 +162,7 @@ const LoginForm = () => {
               Password
             </label>
             <div className="relative">
-              <input
+              <animated.input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 value={password}
@@ -167,12 +186,12 @@ const LoginForm = () => {
             )}
           </div>
           <div className="flex items-center justify-between mb-8">
-            <button
+            <animated.button
               type="submit"
-              className="bg-gradient-to-r from-teal-500 to-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-transform transform hover:scale-105"
+              className="bg-gradient-to-r from-teal-500 to-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-transform transform hover:scale-105 focus:outline-none"
             >
               Sign In
-            </button>
+            </animated.button>
             <a
               className="text-lg text-teal-400 hover:underline"
               href="#"
@@ -183,18 +202,20 @@ const LoginForm = () => {
           <div className="flex flex-col items-center mb-6">
             <p className="text-gray-600 mb-4">Or sign in with</p>
             <div className="flex space-x-4">
-              <button
+              <animated.button
                 type="button"
-                className="flex items-center justify-center p-3 bg-red-500 text-white rounded-full shadow-md transition-transform transform hover:bg-red-600 active:bg-red-700 hover:scale-110 active:scale-95"
+                style={rippleSpring}
+                className="flex items-center justify-center p-3 bg-red-500 text-white rounded-full shadow-md transition-transform transform hover:bg-red-600 hover:scale-110 active:bg-red-700 active:scale-95"
               >
                 <FaGoogle size={20} className="transition-transform transform hover:scale-125 active:scale-110" />
-              </button>
-              <button
+              </animated.button>
+              <animated.button
                 type="button"
-                className="flex items-center justify-center p-3 bg-gray-900 text-white rounded-full shadow-md transition-transform transform hover:bg-gray-800 active:bg-gray-700 hover:scale-110 active:scale-95"
+                style={rippleSpring}
+                className="flex items-center justify-center p-3 bg-gray-900 text-white rounded-full shadow-md transition-transform transform hover:bg-gray-800 hover:scale-110 active:bg-gray-700 active:scale-95"
               >
                 <FaGithub size={20} className="transition-transform transform hover:scale-125 active:scale-110" />
-              </button>
+              </animated.button>
             </div>
           </div>
           <div className="text-center">
@@ -210,7 +231,7 @@ const LoginForm = () => {
           </div>
         </form>
         <footer className="mt-8 text-center text-gray-500 text-sm">
-          Developed By Mukim Uddin
+          Developed By Mukim
         </footer>
       </animated.div>
     </animated.div>
@@ -218,6 +239,3 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
-
-
-
